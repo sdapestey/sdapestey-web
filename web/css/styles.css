@@ -296,7 +296,7 @@ strong {
 .hero {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 2.5rem 1.5rem 2.75rem;
+    padding: 2rem 1.5rem 1.5rem;
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 2rem 2.5rem;
@@ -435,7 +435,11 @@ strong {
 .section {
     max-width: var(--max);
     margin: 0 auto;
-    padding: 4.5rem 1.5rem;
+    padding: 3rem 1.5rem;
+}
+
+#experience {
+    padding-top: 2rem;
 }
 
 .section-alt {
