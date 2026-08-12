@@ -786,8 +786,8 @@ strong {
 @media (max-width: 960px) {
     .hero {
         grid-template-columns: 1fr;
-        min-height: auto;
-        padding-top: 2.5rem;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
         gap: 1.5rem;
         justify-items: start;
     }
