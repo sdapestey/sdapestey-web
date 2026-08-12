@@ -1,0 +1,52 @@
+# sdapestey-web
+
+Portfolio profesional de [Sebastián Apestey](https://sdapestey.com.ar) — Analista NOC / IT / Seguridad Informática.
+
+Sitio **estático** (HTML/CSS/JS). No requiere Docker, Node ni build step.
+
+## Stack
+
+- HTML semántico + CSS propio
+- i18n ES/EN
+- Tema light / dark / system
+- Servido con **lighttpd**
+
+## Estructura
+
+```
+web/                 # document root
+  index.html
+  css/styles.css
+  js/i18n.js
+  js/scripts.js
+  assets/
+lighttpd.conf        # config local
+```
+
+## Desarrollo local
+
+```bash
+# Debian/Ubuntu
+sudo apt install lighttpd
+
+# Desde la raíz del repo
+lighttpd -D -f lighttpd.conf
+```
+
+Abrí [http://127.0.0.1:8080](http://127.0.0.1:8080).
+
+Alternativa rápida sin lighttpd:
+
+```bash
+cd web && python3 -m http.server 8080
+```
+
+## Deploy
+
+1. Clonar o `git pull` en el servidor
+2. Apuntar `server.document-root` de lighttpd a `.../web`
+3. TLS con Let's Encrypt (Caddy, nginx proxy o `lighttpd` + `mod_openssl`)
+
+## Licencia
+
+Contenido personal. Código del sitio libre para uso propio.
