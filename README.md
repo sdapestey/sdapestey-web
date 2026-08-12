@@ -1,49 +1,44 @@
 # sdapestey-web
 
-Portfolio profesional de [Sebastián Apestey](https://sdapestey.com.ar) — Analista NOC / IT / Seguridad Informática.
+Portfolio de [Sebastián Apestey](https://sdapestey.com.ar).
 
-Sitio **estático** (HTML/CSS/JS). No requiere Docker ni build step.
+Sitio estático servido **solo con lighttpd** (sin Docker, sin nginx).
 
-## Arquitectura en el VPS
+## Puertos
 
-```
-Internet → nginx :80/:443 (TLS) → lighttpd 127.0.0.1:8080 → ./web
-```
+| Puerto | Uso |
+|--------|-----|
+| 80 | redirect → HTTPS |
+| 443 | sitio (TLS Let's Encrypt) |
 
-Nginx ya escucha en 80/443. **No** pongas lighttpd en el puerto 80.
-
-## Stack
-
-- HTML + CSS propio
-- i18n ES/EN
-- Tema light / dark / system
-- lighttpd (archivos) + nginx (HTTPS)
-
-## Arranque en el servidor
+## En el VPS (una vez)
 
 ```bash
 cd ~/sdapestey-web
 git pull
 
-# Backend (sin sudo)
-lighttpd -D -f lighttpd.conf
+# 1) Parar nginx
+sudo systemctl stop nginx
+sudo systemctl disable nginx
+
+# 2) Permisos de lectura a certs y web
+sudo usermod -aG ssl-cert www-data 2>/dev/null || true
+sudo chmod o+x /home/sdapestey /home/sdapestey/sdapestey-web
+sudo chown -R sdapestey:www-data ~/sdapestey-web/web
+
+# 3) Servicio
+sudo cp deploy/lighttpd-sdapestey.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now lighttpd-sdapestey
+sudo systemctl status lighttpd-sdapestey
 ```
 
-Si nginx ya hacía `proxy_pass` a `127.0.0.1:8080` (Docker viejo), listo.
+Prueba: https://sdapestey.com.ar
 
-Si no, hay un ejemplo en `deploy/nginx-sdapestey.conf.example`.
+## Nota
 
-```bash
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-## Local (lab)
-
-```bash
-# Sin pelear con nginx del host: editá temporalmente server.port o:
-cd web && python3 -m http.server 8080
-```
+Los vhosts `status.` / `monitor.` que iban a Uptime Kuma (puerto 3001) dejan de existir al quitar nginx. Si los necesitás después, se pueden agregar en lighttpd.
 
 ## Licencia
 
-Contenido personal. Código del sitio libre para uso propio.
+Contenido personal.
