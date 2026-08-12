@@ -2,51 +2,47 @@
 
 Portfolio profesional de [Sebastián Apestey](https://sdapestey.com.ar) — Analista NOC / IT / Seguridad Informática.
 
-Sitio **estático** (HTML/CSS/JS). No requiere Docker, Node ni build step.
+Sitio **estático** (HTML/CSS/JS). No requiere Docker ni build step.
+
+## Arquitectura en el VPS
+
+```
+Internet → nginx :80/:443 (TLS) → lighttpd 127.0.0.1:8080 → ./web
+```
+
+Nginx ya escucha en 80/443. **No** pongas lighttpd en el puerto 80.
 
 ## Stack
 
-- HTML semántico + CSS propio
+- HTML + CSS propio
 - i18n ES/EN
 - Tema light / dark / system
-- Servido con **lighttpd**
+- lighttpd (archivos) + nginx (HTTPS)
 
-## Estructura
-
-```
-web/                 # document root
-  index.html
-  css/styles.css
-  js/i18n.js
-  js/scripts.js
-  assets/
-lighttpd.conf        # config local
-```
-
-## Desarrollo / servidor
+## Arranque en el servidor
 
 ```bash
-# Debian/Ubuntu
-sudo apt install lighttpd
+cd ~/sdapestey-web
+git pull
 
-# Desde la raíz del repo (puerto 80 → requiere sudo)
-sudo lighttpd -D -f lighttpd.conf
+# Backend (sin sudo)
+lighttpd -D -f lighttpd.conf
 ```
 
-Abrí [http://TU_IP_O_DOMINIO](http://sdapestey.com.ar).
+Si nginx ya hacía `proxy_pass` a `127.0.0.1:8080` (Docker viejo), listo.
 
-Alternativa rápida sin privilegios (solo lab):
+Si no, hay un ejemplo en `deploy/nginx-sdapestey.conf.example`.
 
 ```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+## Local (lab)
+
+```bash
+# Sin pelear con nginx del host: editá temporalmente server.port o:
 cd web && python3 -m http.server 8080
 ```
-
-## Deploy
-
-1. `git pull` en el servidor
-2. Detener stacks viejos de Docker si aún existen (`docker stop` / `docker rm`)
-3. `sudo lighttpd -D -f lighttpd.conf` (o servicio systemd)
-4. TLS con Let's Encrypt delante o con `mod_openssl`
 
 ## Licencia
 
