@@ -23,19 +23,19 @@ web/                 # document root
 lighttpd.conf        # config local
 ```
 
-## Desarrollo local
+## Desarrollo / servidor
 
 ```bash
 # Debian/Ubuntu
 sudo apt install lighttpd
 
-# Desde la raíz del repo
-lighttpd -D -f lighttpd.conf
+# Desde la raíz del repo (puerto 80 → requiere sudo)
+sudo lighttpd -D -f lighttpd.conf
 ```
 
-Abrí [http://127.0.0.1:8080](http://127.0.0.1:8080).
+Abrí [http://TU_IP_O_DOMINIO](http://sdapestey.com.ar).
 
-Alternativa rápida sin lighttpd:
+Alternativa rápida sin privilegios (solo lab):
 
 ```bash
 cd web && python3 -m http.server 8080
@@ -43,9 +43,10 @@ cd web && python3 -m http.server 8080
 
 ## Deploy
 
-1. Clonar o `git pull` en el servidor
-2. Apuntar `server.document-root` de lighttpd a `.../web`
-3. TLS con Let's Encrypt (Caddy, nginx proxy o `lighttpd` + `mod_openssl`)
+1. `git pull` en el servidor
+2. Detener stacks viejos de Docker si aún existen (`docker stop` / `docker rm`)
+3. `sudo lighttpd -D -f lighttpd.conf` (o servicio systemd)
+4. TLS con Let's Encrypt delante o con `mod_openssl`
 
 ## Licencia
 
